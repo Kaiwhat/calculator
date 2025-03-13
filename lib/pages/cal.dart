@@ -14,15 +14,7 @@ class CalculatorApplication extends StatefulWidget {
 class _CalculatorApplicationState extends State<CalculatorApplication> {
   var result = '0';
   var inputUser = '';
-  var rates = <String, double>{
-    'USD': 0.03,
-    'KRW': 44.15,
-    'RUB': 2.62,
-    'EUR': 0.027,
-    'JPY': 4.48,
-    'CNY': 0.21,
-  };
-
+  bool switchCoin = false;
   void buttonPressed(String text) {
     setState(() {
       inputUser = inputUser + text;
@@ -39,6 +31,10 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
               setState(() {
                 inputUser = '';
                 result = '0';
+              });
+            } else if (text1 == 'S') {
+              setState(() {
+                switchCoin = !switchCoin; // ✅ 這樣 UI 會更新
               });
             } else {
               buttonPressed(text1);
@@ -109,11 +105,6 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 EvaluationType.REAL,
                 contextModel,
               );
-              // CurrencyRate rate = await LiveCurrencyRate.convertCurrency(
-              //   "TWD",
-              //   "USD",
-              //   1,
-              // );
               setState(() {
                 result = eval.toString();
               });
@@ -185,7 +176,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            '$selectedCurrency \$',
+                            switchCoin ? '\$' : '$selectedCurrency \$',
                             style: TextStyle(
                               color: Color(0xFFB7B7B7),
                               fontSize: 40,
@@ -194,7 +185,11 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              (rate * double.parse(result)).toStringAsFixed(2),
+                              switchCoin
+                                  ? (double.parse(result) / rate)
+                                      .toStringAsFixed(2)
+                                  : (rate * double.parse(result))
+                                      .toStringAsFixed(2),
                               style: TextStyle(
                                 color: Color(0xFFFFFFFF),
                                 fontSize: 50,
@@ -234,7 +229,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            '\$',
+                            switchCoin ? '$selectedCurrency \$' : '\$',
                             style: TextStyle(
                               color: Color(0xFFB7B7B7),
                               fontSize: 50,

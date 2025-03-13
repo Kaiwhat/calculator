@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculator/pages/cal.dart';
-import 'package:calculator/pages/currency.dart';
 
 void main() {
   runApp(
