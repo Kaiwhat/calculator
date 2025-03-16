@@ -296,6 +296,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
     }
   }
 
+  // ignore: non_constant_identifier_names
   bool TextOprator(String text) {
     var list = ['AC', '<-', '%'];
 

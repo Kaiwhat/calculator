@@ -8,13 +8,43 @@ class CurrencyPage extends StatelessWidget {
 
   // 貨幣代碼對應國家旗幟（ISO 3166-1 alpha-2 國家代碼）
   static final Map<String, String> currencyToCountry = {
-    'USD': 'us', // 美國
-    'KRW': 'kr', // 韓國
-    'RUB': 'ru', // 俄羅斯
-    'EUR': 'eu', // 歐盟
-    'JPY': 'jp', // 日本
-    'CNY': 'cn', // 中國
-    'TWD': 'tw', // 台灣
+    'USD': 'us',
+    'KRW': 'kr',
+    'RUB': 'ru',
+    'EUR': 'eu',
+    'JPY': 'jp',
+    'CNY': 'cn',
+    'TWD': 'tw',
+    'GBP': 'gb',
+    'AUD': 'au',
+    'CAD': 'ca',
+    'CHF': 'ch',
+    'SGD': 'sg',
+    'HKD': 'hk',
+    'NZD': 'nz',
+    'INR': 'in',
+    'THB': 'th',
+    'MYR': 'my',
+    'PHP': 'ph',
+    'IDR': 'id',
+    'VND': 'vn',
+    'BRL': 'br',
+    'MXN': 'mx',
+    'ZAR': 'za',
+    'SEK': 'se',
+    'NOK': 'no',
+    'DKK': 'dk',
+    'PLN': 'pl',
+    'TRY': 'tr',
+    'HUF': 'hu',
+    'CZK': 'cz',
+    'ILS': 'il',
+    'AED': 'ae',
+    'SAR': 'sa',
+    'EGP': 'eg',
+    'CLP': 'cl',
+    'COP': 'co',
+    'ARS': 'ar',
   };
 
   @override
@@ -28,7 +58,7 @@ class CurrencyPage extends StatelessWidget {
         itemCount: currencies.length,
         itemBuilder: (context, index) {
           String currency = currencies[index];
-          String countryCode = currencyToCountry[currency] ?? 'us'; // 預設 US
+          String countryCode = currencyToCountry[currency] ?? ''; // 預設 US
 
           return ListTile(
             leading: CircleFlag(countryCode, size: 32), // 顯示國旗
