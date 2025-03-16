@@ -15,6 +15,7 @@ dependencies:
   math_expressions: ^2.3.0
   live_currency_rate: ^1.0.8
   provider: ^6.1.2
+  circle_flags: ^5.0.0
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:math_expressions/math_expressions.dart';
 import '../main.dart';
 import 'currency.dart';
+import 'package:circle_flags/circle_flags.dart';
 
 class CalculatorApplication extends StatefulWidget {
   const CalculatorApplication({super.key});
@@ -34,7 +35,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
               });
             } else if (text1 == 'S') {
               setState(() {
-                switchCoin = !switchCoin; // ✅ 這樣 UI 會更新
+                switchCoin = !switchCoin;
               });
             } else {
               buttonPressed(text1);
@@ -98,6 +99,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
         RawMaterialButton(
           onPressed: () {
             if (text4 == '=') {
+              // ignore: deprecated_member_use
               Parser parser = Parser();
               Expression expression = parser.parse(inputUser);
               ContextModel contextModel = ContextModel();
@@ -166,7 +168,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 ),
               ),
               Expanded(
-                flex: 15,
+                flex: 3,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -203,7 +205,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 ),
               ),
               Expanded(
-                flex: 25,
+                flex: 5,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -252,7 +254,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 ),
               ),
               Expanded(
-                flex: 50,
+                flex: 10,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
