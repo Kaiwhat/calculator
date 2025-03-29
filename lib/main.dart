@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:calculator/pages/cal.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     ChangeNotifierProvider(
       create: (context) => CurrencyProvider()..fetchExchangeRates(),
