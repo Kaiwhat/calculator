@@ -58,25 +58,34 @@ class _CurrencyPageState extends State<CurrencyPage> {
     'ALL': 'al',
     'AMD': 'am',
     'AOA': 'ao',
+    'AWG': 'aw',
+    'AZN': 'az',
     'BAM': 'ba',
+    'BBD': 'brb',
     'BDT': 'bd',
     'BGN': 'bg',
     'BHD': 'bh',
     'BIF': 'bi',
+    'BMD': 'bmu',
     'BND': 'bn',
     'BOB': 'bo',
     'BSD': 'bs',
+    'BTN': 'BT',
     'BWP': 'bw',
     'BYN': 'by',
     'BZD': 'bz',
     'CDF': 'cd',
+    'CVE': 'cpv',
     'CRC': 'cr',
     'CUP': 'cu',
     'DJF': 'dj',
     'DOP': 'do',
     'DZD': 'dz',
+    'ERN': 'eri',
     'ETB': 'et',
     'FJD': 'fj',
+    'FKP': 'fk',
+    'FOK': 'fro',
     'GEL': 'ge',
     'GHS': 'gh',
     'GNF': 'gn',
@@ -84,6 +93,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
     'GYD': 'gy',
     'HNL': 'hn',
     'HTG': 'ht',
+    'IMP': 'gb',
     'IQD': 'iq',
     'IRR': 'ir',
     'JMD': 'jm',
@@ -127,6 +137,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
     'SOS': 'so',
     'SSP': 'ss',
     'SYP': 'sy',
+    'TJS': 'TJK',
     'TZS': 'tz',
     'UAH': 'ua',
     'UGX': 'ug',
@@ -224,14 +235,23 @@ class _CurrencyPageState extends State<CurrencyPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // 📌 常用貨幣 Checkbox
-                      Checkbox(
-                        value: favoriteCurrencies.contains(currency),
-                        onChanged: (bool? isChecked) {
+                      IconButton(
+                        icon: Icon(
+                          favoriteCurrencies.contains(currency)
+                              ? Icons
+                                  .favorite // ✅ 選中的狀態
+                              : Icons.favorite_border, // ✅ 未選中的狀態
+                          color:
+                              favoriteCurrencies.contains(currency)
+                                  ? Colors.red
+                                  : Colors.grey,
+                        ),
+                        onPressed: () {
                           setState(() {
-                            if (isChecked == true) {
-                              favoriteCurrencies.add(currency);
-                            } else {
+                            if (favoriteCurrencies.contains(currency)) {
                               favoriteCurrencies.remove(currency);
+                            } else {
+                              favoriteCurrencies.add(currency);
                             }
                           });
                           _saveFavoriteCurrencies(); // ✅ 存儲變更
