@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:math_expressions/math_expressions.dart';
 import '../main.dart';
 import 'currency.dart';
-import 'package:circle_flags/circle_flags.dart';
 
 class CalculatorApplication extends StatefulWidget {
   const CalculatorApplication({super.key});
@@ -168,7 +167,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 ),
               ),
               Expanded(
-                flex: 3,
+                flex: 0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -205,7 +204,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 ),
               ),
               Expanded(
-                flex: 5,
+                flex: 0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -243,7 +242,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                               result,
                               style: TextStyle(
                                 color: Color(0xFFFFFFFF),
-                                fontSize: 70,
+                                fontSize: 60,
                               ),
                             ),
                           ),
@@ -254,7 +253,7 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                 ),
               ),
               Expanded(
-                flex: 10,
+                flex: 0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:calculator/pages/cal.dart';
+import 'package:calculator/pages/trip_page.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
@@ -20,10 +21,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const CalculatorApplication(),
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: MainPage());
   }
 }
 
@@ -51,5 +49,67 @@ class CurrencyProvider extends ChangeNotifier {
   void updateCurrency(String newCurrency) {
     selectedCurrency = newCurrency;
     notifyListeners(); // 通知 UI 更新
+  }
+}
+
+// 主畫面帶 BottomNavigationBar
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int _currentIndex = 0;
+
+  // 定義四個分頁
+  final List<Widget> _pages = [
+    CalculatorApplication(), // 計算機 (cal.dart, currency.dart)
+    TripPage(), // 記帳本 Placeholder
+    PlaceholderPage(title: "歷史檔案"), // 歷史檔案 Placeholder
+    PlaceholderPage(title: "設定"), // 設定 Placeholder
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0x00000000),
+      body: _pages[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed, // 超過三個 item 要加這行
+        currentIndex: _currentIndex,
+        selectedItemColor: Colors.blueAccent,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.calculate), label: '計算機'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: '記帳本'),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: '歷史檔案'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '設定'),
+        ],
+      ),
+    );
+  }
+}
+
+// 簡單的 Placeholder 頁面
+class PlaceholderPage extends StatelessWidget {
+  final String title;
+
+  const PlaceholderPage({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Center(
+        child: Text("$title 頁面尚未完成", style: const TextStyle(fontSize: 24)),
+      ),
+    );
   }
 }
