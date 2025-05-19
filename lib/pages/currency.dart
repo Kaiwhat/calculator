@@ -155,10 +155,10 @@ class _CurrencyPageState extends State<CurrencyPage> {
   @override
   void initState() {
     super.initState();
-    _loadFavoriteCurrencies(); // ✅ 讀取儲存的常用貨幣
+    _loadFavoriteCurrencies(); // 讀取儲存的常用貨幣
   }
 
-  // ✅ 讀取本地存儲的常用貨幣
+  // 讀取本地存儲的常用貨幣
   Future<void> _loadFavoriteCurrencies() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -167,7 +167,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
     });
   }
 
-  // ✅ 更新本地存儲的常用貨幣
+  // 更新本地存儲的常用貨幣
   Future<void> _saveFavoriteCurrencies() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
@@ -190,7 +190,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
             )
             .toList();
 
-    // 📌 讓常用貨幣置頂
+    // 讓常用貨幣置頂
     filteredCurrencies.sort((a, b) {
       if (favoriteCurrencies.contains(a) && !favoriteCurrencies.contains(b))
         return -1;
@@ -222,7 +222,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
             ),
           ),
 
-          // 📌 貨幣列表
+          // 貨幣列表
           Expanded(
             child: ListView.builder(
               itemCount: filteredCurrencies.length,
@@ -234,13 +234,13 @@ class _CurrencyPageState extends State<CurrencyPage> {
                   leading: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // 📌 常用貨幣 Checkbox
+                      // 常用貨幣 Checkbox
                       IconButton(
                         icon: Icon(
                           favoriteCurrencies.contains(currency)
                               ? Icons
-                                  .favorite // ✅ 選中的狀態
-                              : Icons.favorite_border, // ✅ 未選中的狀態
+                                  .favorite // 選中的狀態
+                              : Icons.favorite_border, // 未選中的狀態
                           color:
                               favoriteCurrencies.contains(currency)
                                   ? Colors.red
@@ -254,7 +254,7 @@ class _CurrencyPageState extends State<CurrencyPage> {
                               favoriteCurrencies.add(currency);
                             }
                           });
-                          _saveFavoriteCurrencies(); // ✅ 存儲變更
+                          _saveFavoriteCurrencies(); // 存儲變更
                         },
                       ),
                       CircleFlag(countryCode, size: 32), // 顯示國旗

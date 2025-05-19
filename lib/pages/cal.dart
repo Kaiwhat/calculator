@@ -12,122 +12,69 @@ class CalculatorApplication extends StatefulWidget {
 }
 
 class _CalculatorApplicationState extends State<CalculatorApplication> {
-  var result = '0';
-  var inputUser = '';
+  String inputUser = '';
+  String result = '0';
   bool switchCoin = false;
-  void buttonPressed(String text) {
+
+  void onButtonPressed(String value) {
     setState(() {
-      inputUser = inputUser + text;
+      inputUser += value;
     });
   }
 
-  Widget getRow(String text1, String text2, String text3, String text4) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        RawMaterialButton(
-          onPressed: () {
-            if (text1 == 'AC') {
-              setState(() {
-                inputUser = '';
-                result = '0';
-              });
-            } else if (text1 == 'S') {
-              setState(() {
-                switchCoin = !switchCoin;
-              });
-            } else {
-              buttonPressed(text1);
-            }
-          },
-          elevation: 2.0,
-          fillColor: getBackgroundColor(text1),
-          padding: EdgeInsets.all(20.0),
-          shape: CircleBorder(),
-          child: Text(
-            text1,
-            style: TextStyle(
-              color: getTextColor(text1),
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+  void onOperatorPressed(String value) {
+    setState(() {
+      if (value == 'AC') {
+        inputUser = '';
+        result = '0';
+      } else if (value == '<-') {
+        if (inputUser.isNotEmpty) {
+          inputUser = inputUser.substring(0, inputUser.length - 1);
+        }
+      } else if (value == 'S') {
+        switchCoin = !switchCoin;
+      } else if (value == '=') {
+        try {
+          Parser p = Parser();
+          Expression exp = p.parse(inputUser);
+          double eval = exp.evaluate(EvaluationType.REAL, ContextModel());
+          result = eval.toString();
+        } catch (_) {
+          result = '錯誤';
+        }
+      } else {
+        inputUser += value;
+      }
+    });
+  }
+
+  Widget buildButton(String label, {Color? color, double fontSize = 30}) {
+    return RawMaterialButton(
+      onPressed: () => onOperatorPressed(label),
+      fillColor: getButtonColor(label),
+      padding: const EdgeInsets.all(20),
+      shape: const CircleBorder(),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: fontSize,
+          color: getTextColor(label),
+          fontWeight: FontWeight.bold,
         ),
-        RawMaterialButton(
-          onPressed: () {
-            if (text2 == '<-') {
-              setState(() {
-                if (inputUser.isNotEmpty) {
-                  inputUser = inputUser.substring(0, inputUser.length - 1);
-                }
-              });
-            } else {
-              buttonPressed(text2);
-            }
-          },
-          elevation: 2.0,
-          fillColor: getBackgroundColor(text2),
-          padding: EdgeInsets.all(20.0),
-          shape: CircleBorder(),
-          child: Text(
-            text2,
-            style: TextStyle(
-              color: getTextColor(text2),
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        RawMaterialButton(
-          onPressed: () {
-            buttonPressed(text3);
-          },
-          elevation: 2.0,
-          fillColor: getBackgroundColor(text3),
-          padding: EdgeInsets.all(20.0),
-          shape: CircleBorder(),
-          child: Text(
-            text3,
-            style: TextStyle(
-              color: getTextColor(text3),
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        RawMaterialButton(
-          onPressed: () {
-            if (text4 == '=') {
-              // ignore: deprecated_member_use
-              Parser parser = Parser();
-              Expression expression = parser.parse(inputUser);
-              ContextModel contextModel = ContextModel();
-              double eval = expression.evaluate(
-                EvaluationType.REAL,
-                contextModel,
-              );
-              setState(() {
-                result = eval.toString();
-              });
-            } else {
-              buttonPressed(text4);
-            }
-          },
-          elevation: 2.0,
-          fillColor: Color(0xFFf7921e),
-          padding: EdgeInsets.all(15.0),
-          shape: CircleBorder(),
-          child: Text(
-            text4,
-            style: TextStyle(
-              fontSize: 40,
-              color: Color(0xFFFFFFFF),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
+      ),
     );
+  }
+
+  Color getButtonColor(String label) {
+    if (label == 'S') return const Color(0xff2f00ff);
+    if (['AC', '<-', '%'].contains(label)) return const Color(0xFFB7B7B7);
+    if (label == '=') return const Color(0xFFf7921e);
+    return const Color(0xFF414141);
+  }
+
+  Color getTextColor(String label) {
+    if (['AC', '<-', '%'].contains(label)) return Colors.black;
+    return Colors.white;
   }
 
   @override
@@ -135,24 +82,29 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
     var currencyProvider = Provider.of<CurrencyProvider>(context);
     String selectedCurrency = currencyProvider.selectedCurrency;
     double rate = currencyProvider.rates[selectedCurrency] ?? 1.0;
+
+    String converted =
+        switchCoin
+            ? (double.tryParse(result) ?? 0 / rate).toStringAsFixed(2)
+            : (rate * (double.tryParse(result) ?? 0)).toStringAsFixed(2);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color(0x00000000),
+        backgroundColor: Colors.transparent,
         body: SafeArea(
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CurrencyPage(),
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CurrencyPage(),
+                      ),
                     ),
-                  );
-                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // 設定按鈕顏色
+                  backgroundColor: Colors.blue,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 12,
@@ -166,104 +118,42 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
               ),
-              Expanded(
-                flex: 0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            switchCoin ? '\$' : '$selectedCurrency \$',
-                            style: TextStyle(
-                              color: Color(0xFFB7B7B7),
-                              fontSize: 40,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              switchCoin
-                                  ? (double.parse(result) / rate)
-                                      .toStringAsFixed(2)
-                                  : (rate * double.parse(result))
-                                      .toStringAsFixed(2),
-                              style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontSize: 50,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+              const SizedBox(height: 10),
+              buildDisplayRow(
+                switchCoin ? '\$' : '$selectedCurrency \$',
+                converted,
+                fontSize: 50,
+              ),
+              buildDisplayRow(
+                switchCoin ? '$selectedCurrency \$' : '\$',
+                result,
+                fontSize: 60,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    inputUser,
+                    style: const TextStyle(
+                      color: Color(0xFFB7B7B7),
+                      fontSize: 40,
                     ),
-                  ],
+                  ),
                 ),
               ),
               Expanded(
-                flex: 0,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text(
-                            inputUser,
-                            style: TextStyle(
-                              color: Color(0xFFB7B7B7),
-                              fontSize: 40,
-                            ),
-                            textAlign: TextAlign.end,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            switchCoin ? '$selectedCurrency \$' : '\$',
-                            style: TextStyle(
-                              color: Color(0xFFB7B7B7),
-                              fontSize: 50,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              result,
-                              style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontSize: 60,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                flex: 0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(height: 5),
-                    getRow('AC', '<-', '%', '/'),
-                    getRow('1', '2', '3', '*'),
-                    getRow('4', '5', '6', '-'),
-                    getRow('7', '8', '9', '+'),
-                    getRow('S', '0', '.', '='),
-                    Padding(padding: EdgeInsets.fromLTRB(0, 10, 0, 0)),
+                    buildButtonRow(['AC', '<-', '%', '/']),
+                    buildButtonRow(['1', '2', '3', '*']),
+                    buildButtonRow(['4', '5', '6', '-']),
+                    buildButtonRow(['7', '8', '9', '+']),
+                    buildButtonRow(['S', '0', '.', '=']),
                   ],
                 ),
               ),
@@ -274,44 +164,38 @@ class _CalculatorApplicationState extends State<CalculatorApplication> {
     );
   }
 
-  bool isOprator(String text) {
-    var list = ['AC', '<-', '%'];
-
-    for (var item in list) {
-      if (text == item) {
-        return true;
-      }
-    }
-    return false;
+  Widget buildDisplayRow(String label, String value, {double fontSize = 50}) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: const Color(0xFFB7B7B7),
+              fontSize: fontSize,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Text(
+            value,
+            style: TextStyle(color: Colors.white, fontSize: fontSize + 10),
+          ),
+        ],
+      ),
+    );
   }
 
-  Color getBackgroundColor(String text) {
-    if (text == 'S') {
-      return Color(0xff2f00ff);
-    } else if (isOprator(text)) {
-      return Color(0xFFB7B7B7);
-    } else {
-      return Color(0xFF414141);
-    }
-  }
-
-  // ignore: non_constant_identifier_names
-  bool TextOprator(String text) {
-    var list = ['AC', '<-', '%'];
-
-    for (var item in list) {
-      if (text == item) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Color getTextColor(String text) {
-    if (isOprator(text)) {
-      return Colors.black;
-    } else {
-      return Color(0xFFFFFFFF);
-    }
+  Widget buildButtonRow(List<String> labels) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children:
+          labels
+              .map(
+                (label) => buildButton(label, fontSize: label == '=' ? 40 : 30),
+              )
+              .toList(),
+    );
   }
 }
