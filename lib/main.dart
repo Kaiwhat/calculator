@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:calculator/pages/cal.dart';
 import 'package:calculator/pages/trip_page.dart';
 import 'package:calculator/pages/setting_page.dart';
+import 'package:calculator/pages/record_history.dart';
 import 'package:http/http.dart' as http;
 
 void main() async {
@@ -68,7 +69,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     CalculatorApplication(), // 計算機 (cal.dart, currency.dart)
     TripPage(), // 記帳本 Placeholder
-    PlaceholderPage(title: "歷史檔案"), // 歷史檔案 Placeholder
+    RecordHistoryPage(), // 歷史檔案 Placeholder
     SettingsPage(),
   ];
 
